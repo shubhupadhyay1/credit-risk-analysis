@@ -1,5 +1,3 @@
-
-
 # **Credit Risk Analysis: Predicting Defaults with Machine Learning**
 
 ---
@@ -7,17 +5,18 @@
 ### **Table of Contents**
 
 1. [Introduction](#introduction)  
-2. [Motivation](#motivation)  
-3. [Methodology](#methodology)  
+2. [Dataset](#dataset)
+3. [Motivation](#motivation)  
+4. [Methodology](#methodology)  
    - [Data Preprocessing](#data-preprocessing)  
    - [Feature Engineering](#feature-engineering)  
    - [Data Scaling & Handling Imbalance](#data-scaling--handling-imbalance)  
    - [Model Training & Custom Evaluation](#model-training--custom-evaluation)  
    - [Model Comparison](#model-comparison)  
    - [Generating Predictions](#generating-predictions)  
-4. [Key Insights](#key-insights)  
-5. [Conclusion](#conclusion)  
-6. [Future Work](#future-work)
+5. [Key Insights](#key-insights)  
+6. [Conclusion](#conclusion)  
+7. [Future Work](#future-work)
 
 ---
 
@@ -29,7 +28,18 @@ Unlike generic machine learning pipelines, this project was built with deep cons
 
 ---
 
-## **2. Motivation**
+## **2. Dataset**
+
+The dataset used in this project is an anonymized version of the **American Express Default Prediction Dataset**, comprising borrower-level information such as income, credit limits, previous defaults, and more. Here's a quick look:
+
+-   **Train Dataset**: 45,528 records
+-   **Test Dataset**: 11,383 records
+-   **Target Variable**: `credit_card_default` (binary classification: 1 for default, 0 for non-default)
+
+
+---
+
+## **3. Motivation**
 
 Traditional credit risk models often rely on static statistical methods that fail to capture complex, non-linear relationships in data. We wanted to push beyond these limitations by building:
 
@@ -39,11 +49,11 @@ Traditional credit risk models often rely on static statistical methods that fai
 
 ---
 
-## **3. Methodology**
+## **4. Methodology**
 
 Our workflow is broken down into several key stages:
 
-### **3.1 Data Preprocessing**
+### **4.1 Data Preprocessing**
 
 #### **Steps Taken**:
 1. **Imputation of Missing Values**:
@@ -55,7 +65,7 @@ Our workflow is broken down into several key stages:
 
 ---
 
-### **3.2 Feature Engineering**
+### **4.2 Feature Engineering**
 
 Feature engineering was a crucial step in this project, involving both **statistical filtering** and **transformations tailored to financial data**.
 
@@ -71,7 +81,7 @@ Feature engineering was a crucial step in this project, involving both **statist
 
 ---
 
-### **3.3 Data Scaling & Handling Imbalance**
+### **4.3 Data Scaling & Handling Imbalance**
 
 - **Scaling**:  
   We applied **Min-Max scaling** to normalize feature values, ensuring compatibility across different models.
@@ -81,7 +91,7 @@ Feature engineering was a crucial step in this project, involving both **statist
 
 ---
 
-### **3.4 Model Training & Custom Evaluation**
+### **4.4 Model Training & Custom Evaluation**
 
 #### **Models Trained**:
 We trained the following models:
@@ -103,7 +113,7 @@ We created a **custom evaluation function** to compute and display key metrics:
 
 ---
 
-### **3.5 Model Comparison**
+### **4.5 Model Comparison**
 
 Here’s the final comparison of all models:
 
@@ -121,7 +131,7 @@ Here’s the final comparison of all models:
 
 ---
 
-### **3.6 Generating Predictions**
+### **4.6 Generating Predictions**
 
 After selecting **CatBoost** as the best model, we trained it on the entire balanced train dataset and generated predictions on the test dataset. The predictions were saved in the file:
 
@@ -131,7 +141,7 @@ After selecting **CatBoost** as the best model, we trained it on the entire bala
 
 ---
 
-## **4. Key Insights**
+## **5. Key Insights**
 
 1. **CatBoost outperformed all other models**, making it the ideal choice for deployment in real-world scenarios.
 2. **IV filtering and WOE binning significantly improved model interpretability**, which is crucial for financial decision-making.
@@ -139,13 +149,13 @@ After selecting **CatBoost** as the best model, we trained it on the entire bala
 
 ---
 
-## **5. Conclusion**
+## **6. Conclusion**
 
 This project reimagines credit risk analysis by integrating advanced machine learning techniques with carefully crafted, finance-specific feature engineering. We present a solution that doesn’t just predict credit defaults with high accuracy but does so in a way that’s both insightful and actionable for real-world financial decision-making.
 
 ---
 
-## **6. Future Work**
+## **7. Future Work**
 
 1. **Hyperparameter Tuning**:  
    Fine-tune the hyperparameters of the best-performing models to squeeze out even better performance.
