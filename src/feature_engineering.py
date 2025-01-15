@@ -7,12 +7,6 @@ import scipy.stats as stats
 import re
 import traceback
 
-# src/feature_engineering.py
-
-import pandas as pd
-import numpy as np
-import scipy.stats as stats
-
 def mono_bin(Y, X, max_bin=20, force_bin=3):
     """
     Performs monotonic binning on a numerical feature using numpy.percentile for binning.
@@ -26,31 +20,42 @@ def mono_bin(Y, X, max_bin=20, force_bin=3):
     Returns:
         pd.DataFrame: Binned data with IV and WOE calculations.
     """
+    # Convert X to numeric and drop invalid data
+    X = pd.to_numeric(X, errors='coerce')
+    
+    if X.isnull().all():
+        raise ValueError("Feature X contains no valid numeric data after conversion.")
+
     df = pd.DataFrame({"X": X, "Y": Y})
-    justmiss = df[df["X"].isnull()]
     notmiss = df[df["X"].notnull()]
-    
-    # Ensure X is converted to numeric for percentile computation
-    notmiss["X"] = pd.to_numeric(notmiss["X"], errors="coerce")
-    
+    justmiss = df[df["X"].isnull()]
+
     r = 0
-    d2 = None  # Initialize d2 to ensure it's always defined
+    d2 = None
 
-    while np.abs(r) < 1 and max_bin > 2:  # Ensure at least 2 bins remain
+    while np.abs(r) < 1 and max_bin > 2:
         try:
-            # Use numpy.percentile to compute bin edges
-            bins = np.percentile(notmiss.X, np.linspace(0, 100, max_bin))
-            d1 = pd.DataFrame({"X": notmiss.X, "Y": notmiss.Y, "Bucket": pd.cut(notmiss.X, bins, duplicates='drop')})
+            # Ensure X is numeric
+            bins = np.percentile(notmiss["X"], np.linspace(0, 100, max_bin))
+            d1 = pd.DataFrame({
+                "X": notmiss["X"], 
+                "Y": notmiss["Y"], 
+                "Bucket": pd.cut(notmiss["X"], bins, duplicates="drop")
+            })
             d2 = d1.groupby("Bucket", as_index=True)
-            r, p = stats.spearmanr(d2.mean().X, d2.mean().Y)
+            r, _ = stats.spearmanr(d2.mean()["X"], d2.mean()["Y"])
             max_bin -= 1
-        except Exception:
+        except Exception as e:
+            print(f"Error during binning: {e}")
             max_bin -= 1
 
-    # Ensure d2 is assigned or fallback if binning fails
     if d2 is None or len(d2) == 1 or max_bin <= 2:
-        bins = np.percentile(notmiss.X, np.linspace(0, 100, force_bin))
-        d1 = pd.DataFrame({"X": notmiss.X, "Y": notmiss.Y, "Bucket": pd.cut(notmiss.X, bins, include_lowest=True, duplicates='drop')})
+        bins = np.percentile(notmiss["X"], np.linspace(0, 100, force_bin))
+        d1 = pd.DataFrame({
+            "X": notmiss["X"], 
+            "Y": notmiss["Y"], 
+            "Bucket": pd.cut(notmiss["X"], bins, include_lowest=True, duplicates="drop")
+        })
         d2 = d1.groupby("Bucket", as_index=True)
 
     d3 = pd.DataFrame(d2.min().X, columns=["MIN_VALUE"])
@@ -133,3 +138,35 @@ def compute_iv(df, target, threshold=0.02):
     
     print(f"Selected {len(selected_features)} features with IV >= {threshold}")
     return df[selected_features + [target]], iv_df
+
+
+def impute_missing_values(df, cat_feats, num_feats):
+    """
+    Imputes missing values in the dataframe.
+    
+    - Categorical features are imputed with the mode.
+    - Numerical features are imputed with the median.
+    - Only processes columns that exist in the dataframe.
+    
+    Args:
+        df (pd.DataFrame): The input dataframe.
+        cat_feats (list): List of categorical feature columns.
+        num_feats (list): List of numerical feature columns.
+    
+    Returns:
+        pd.DataFrame: Dataframe with missing values imputed.
+    """
+    # Impute categorical features with mode
+    for col in cat_feats:
+        if col in df.columns and df[col].isnull().sum() > 0:  # Check if column exists and has missing values
+            mode_val = df[col].mode()[0]
+            df[col].fillna(mode_val, inplace=True)
+    
+    # Impute numerical features with median
+    for col in num_feats:
+        if col in df.columns and df[col].isnull().sum() > 0:  # Check if column exists and has missing values
+            median_val = df[col].median()
+            df[col].fillna(median_val, inplace=True)
+    
+    return df
+
