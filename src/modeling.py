@@ -5,14 +5,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
 from sklearn.metrics import (confusion_matrix, classification_report, accuracy_score, 
                              f1_score, roc_auc_score, mean_squared_error, roc_curve, auc)
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from xgboost import XGBClassifier
-from catboost import CatBoostClassifier
-from lightgbm import LGBMClassifier
-import matplotlib.pyplot as plt
 
 
 def evaluate_model(model, X_train, y_train, X_test, y_test):
