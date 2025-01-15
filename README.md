@@ -1,6 +1,6 @@
 
 
-# **Credit Risk Analysis: A Machine Learning Journey into Predicting Defaults**
+# **Credit Risk Analysis: Predicting Defaults with Machine Learning**
 
 ---
 
