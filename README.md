@@ -1,6 +1,6 @@
 <!-- Header Image -->
 <p align="center">
-  <img src="assets/header.png" alt="Star Classification Header" width="100%" />
+  <img src="assets/header.png" alt="Credit Risk Header" width="100%" />
 </p>
 
 # **Credit Risk Analysis: Predicting Defaults with Machine Learning**
